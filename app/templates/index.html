@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='common.css') }}" type="text/css"/>
+    <title></title>
+</head>
+<body>
+<form method="POST" action="{{ url_for('index') }}">
+    <div>4RetterCode：<input type="text" name="airport_name"></div>
+    <input type="submit" value="send">
+    <input type="reset" value="clear">
+</form>
+
+<table>
+    <thead>
+    <td>station_id</td>
+    <td>time</td>
+    <td>air_temp</td>
+    <td>dewpoint</td>
+    <td>wind_dir</td>
+    <td>wind_speed</td>
+    <td>visibility</td>
+    <td>altimeter</td>
+    <td>sea_level_press</td>
+    <td>wx_string</td>
+    <td>sky_condition</td>
+    <td>flight_category</td>
+    <td>elevation_m</td>
+    </thead>
+    <tbody>
+    {% for part_d in data %}
+        <tr>
+            <td>{{ part_d.station_id }}</td>
+            <td>{{ part_d.time }}</td>
+            <td>{{ part_d.air_temp }}</td>
+            <td>{{ part_d.dewpoint }}</td>
+            <td>{{ part_d.wind_dir }}</td>
+            <td>{{ part_d.wind_speed }}</td>
+            <td>{{ part_d.visibility }}</td>
+            <td>{{ part_d.altimeter }}</td>
+            <td>{{ part_d.sea_level_press }}</td>
+            <td>{{ part_d.wx_string }}</td>
+            <td>
+                <table>
+                    {% for sc in part_d.sky_condition %}
+                        <tr>
+                            <td>{{ sc.sky_cover }}</td>
+                            <td>{{ sc.cloud_base_ft_agl }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td>{{ part_d.flight_category }}</td>
+            <td>{{ part_d.elevation_m }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
