@@ -12,23 +12,56 @@
     <input type="reset" value="clear">
 </form>
 
-<table>
-    <thead>
-    <td>station_id</td>
-    <td>time</td>
-    <td>air_temp</td>
-    <td>dewpoint</td>
-    <td>wind_dir</td>
-    <td>wind_speed</td>
-    <td>visibility</td>
-    <td>altimeter</td>
-    <td>sea_level_press</td>
-    <td>wx_string</td>
-    <td>sky_condition</td>
-    <td>flight_category</td>
-    <td>elevation_m</td>
-    </thead>
-    <tbody>
+<table class="meterTb">
+    <caption>{{ latest.time }} (Utc)</caption>
+    <tr>
+        <td>Place</td>
+        <td>Temperature</td>
+        <td>Sky condition</td>
+        <td>Wind direction</td>
+        <td>Wind speed</td>
+    </tr>
+    <tr>
+        <td>{{ latest.station_id }}</td>
+        <td>{{ latest.air_temp }} ℃</td>
+        <td>
+            <table>
+                <tr>
+                    <th>sky_cover</th>
+                    <th>cloud_base</th>
+                </tr>
+                {% for sc in latest.sky_condition %}
+                    <tr>
+                        <td>{{ sc.sky_cover }}</td>
+                        <td>{{ sc.cloud_base_ft_agl }} ft</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </td>
+        <td>{{ latest.wind_dir }} °</td>
+        <td>{{ latest.wind_speed }} kt</td>
+    </tr>
+</table>
+
+
+<table class="meterTb">
+    <caption>last 12 hour meters</caption>
+    <tr>
+        <th>station_id</th>
+        <th>time</th>
+        <th>air_temp</th>
+        <th>dewpoint</th>
+        <th>wind_dir</th>
+        <th>wind_speed</th>
+        <th>visibility</th>
+        <th>altimeter</th>
+        <th>sea_level_press</th>
+        <th>wx_string</th>
+        <th>sky_condition</th>
+        <th>flight_category</th>
+        <th>elevation_m</th>
+    </tr>
+
     {% for part_d in data %}
         <tr>
             <td>{{ part_d.station_id }}</td>
@@ -43,6 +76,10 @@
             <td>{{ part_d.wx_string }}</td>
             <td>
                 <table>
+                    <tr>
+                        <th>sky_cover</th>
+                        <th>cloud_base</th>
+                    </tr>
                     {% for sc in part_d.sky_condition %}
                         <tr>
                             <td>{{ sc.sky_cover }}</td>
@@ -55,7 +92,7 @@
             <td>{{ part_d.elevation_m }}</td>
         </tr>
     {% endfor %}
-    </tbody>
+
 </table>
 </body>
 </html>

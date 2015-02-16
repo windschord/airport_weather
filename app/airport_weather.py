@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from datetime import datetime
 from flask import render_template, request
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -30,17 +31,30 @@ def setup():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    new_meter = []
+    latest_meter = []
+    last_12h_meter = []
     if request.method == 'POST':
         station_name = request.form['airport_name'].upper()
+        # 最新Meter
         station = app.db_session.query(Station).filter(Station.name == station_name).first()
-        new_meter = app.db_session.query(Meter).filter(
+        latest_meter = app.db_session.query(Meter).filter(
             Meter.time == app.db_session.query(func.max(Meter.time))).filter(
+            Meter.station_id == station.id).first()
+        latest_meter.station_id = station.name
+        app.logger.debug(latest_meter)
+
+        # fixme this code is not true....
+        # 直近12時間
+        last_12h_meter = app.db_session.query(Meter).filter(
+            Meter.time < datetime.utcnow()).filter(
             Meter.station_id == station.id).all()
-        app.logger.debug(new_meter)
+        for n in last_12h_meter:
+            n.station_id = station.name
+        app.logger.debug(last_12h_meter)
+        
     else:
         pass
-    return render_template("index.html", data=new_meter)
+    return render_template("index.html", latest=latest_meter, data=last_12h_meter)
 
 
 @app.route('/get')
