@@ -6,13 +6,13 @@ import dateutil.parser
 
 from app import app
 from app.model.meter import Meter
-from app.model.meter_sky_condition import SkyCondition
+from app.model.meter_sky_condition import MeterSkyCondition
 
 
 __author__ = 'windschord.com'
 
 
-class GetMeter(object):
+class AcquireMeter(object):
     def __init__(self):
         self.URL = 'http://www.aviationweather.gov/adds/dataserver_current/httpparam?'
 
@@ -57,7 +57,7 @@ class GetMeter(object):
             for sc in d.iter('sky_condition'):
                 sky_cover = sc.attrib['sky_cover']
                 cloud_base_ft_agl = sc.attrib['cloud_base_ft_agl']
-                sky_condition.append(SkyCondition(sky_cover, cloud_base_ft_agl))
+                sky_condition.append(MeterSkyCondition(sky_cover, cloud_base_ft_agl))
 
             flight_category = d.find('flight_category').text
             elevation_m = d.find('elevation_m').text

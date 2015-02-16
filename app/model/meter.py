@@ -2,10 +2,10 @@
 from sqlalchemy import Integer, Column, String, ForeignKey, Float, DateTime, UniqueConstraint
 from sqlalchemy.orm import relation
 from app import app
-from app.model.meter_sky_condition import SkyCondition
-
+from app.model.meter_sky_condition import MeterSkyCondition
 
 __author__ = 'windschord.com'
+
 
 class Meter(app.db_base):
     __tablename__ = 'meter'
@@ -22,7 +22,7 @@ class Meter(app.db_base):
     altimeter = Column(Float)
     sea_level_press = Column(Float)
     wx_string = Column(String(20))
-    sky_condition = relation(SkyCondition, order_by=SkyCondition.id, backref='meter')
+    sky_condition = relation(MeterSkyCondition, order_by=MeterSkyCondition.id, backref='meter')
     flight_category = Column(String(10))
     elevation_m = Column(Float)
 

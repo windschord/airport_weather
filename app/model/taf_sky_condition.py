@@ -4,11 +4,12 @@ from app import app
 
 __author__ = 'windschord.com'
 
-class MeterSkyCondition(app.db_base):
-    __tablename__ = 'meter_sky_condition'
+
+class TafSkyCondition(app.db_base):
+    __tablename__ = 'taf_sky_condition'
 
     id = Column(Integer, primary_key=True)
-    meter_id = Column(Integer, ForeignKey('meter.id'))
+    taf_id = Column(Integer, ForeignKey('taf_forecast.id'))
     sky_cover = Column(String(10))
     cloud_base_ft_agl = Column(String(10))
 

@@ -5,7 +5,8 @@ from sqlalchemy import create_engine, func
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from app import app
-from app.lib.acquire_meter import GetMeter
+from app.lib.acquire_meter import AcquireMeter
+from app.lib.acquire_taf import AcquireTaf
 from app.model.meter import Meter
 from app.model.station import Station
 
@@ -22,6 +23,7 @@ def setup():
 
 @app.route('/setup')
 def setup():
+    app.db_session.rollback()
     app.db_session.add(Station('RJCC', 1.1, 2.2))
     app.db_session.add(Station('RJTT', 1.1, 2.2))
 
@@ -57,15 +59,23 @@ def index():
     return render_template("index.html", latest=latest_meter, data=last_12h_meter)
 
 
-@app.route('/get')
-def get():
-    s = app.db_session.query(Station).all()[0]
-    res = GetMeter().execute(s, 3)
+@app.route('/get/meter')
+def get_meter():
+    s = app.db_session.query(Station).first()
+    res = AcquireMeter().execute(s, 3)
     app.logger.debug(res)
     app.db_session.add_all(res)
     app.db_session.commit()
     return 'OK!'
 
+@app.route('/get/taf')
+def get_taf():
+    s = app.db_session.query(Station).first()
+    res = AcquireTaf().execute(s, 1)
+    app.logger.debug(res)
+    app.db_session.add_all(res)
+    app.db_session.commit()
+    return 'OK!'
 
 if __name__ == '__main__':
     app.run(debug=True)
