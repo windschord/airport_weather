@@ -2,9 +2,10 @@
 import urllib.parse
 import urllib.request
 from xml.etree import ElementTree
-import dateutil.parser
 
-from app import app
+import dateutil.parser
+from flask import current_app
+
 from app.model.meter import Meter
 from app.model.meter_sky_condition import MeterSkyCondition
 
@@ -15,28 +16,31 @@ __author__ = 'windschord.com'
 class AcquireMeter(object):
     def __init__(self):
         self.URL = 'http://www.aviationweather.gov/adds/dataserver_current/httpparam?'
+        self.logger = ''
+
 
     def execute(self, station, hours):
-        res = self.__request_awc(station.name, hours)
+        res = self.__request_awc(station.icao_code, hours)
         return self.__parse_xml(station, res)
 
-    def __request_awc(self, station_name, hours):
+
+    def __request_awc(self: object, airport_info, hours):
         values = {'dataSource': 'metars',
                   'requestType': 'retrieve',
                   'format': 'xml',
-                  'stationString': station_name,
+                  'stationString': airport_info,
                   'hoursBeforeNow': hours}
 
         data = urllib.parse.urlencode(values)
         req = urllib.request.Request(self.URL + data)
-        app.logger.debug('req: %s' % req.get_full_url())
+        current_app.logger.debug('req: %s' % req.get_full_url())
 
         response = urllib.request.urlopen(req)
         the_page = response.read()
-        app.logger.debug('res: %s' % the_page)
+        current_app.logger.debug('res: %s' % the_page)
         return the_page
 
-    def __parse_xml(self, station, xml_data):
+    def __parse_xml(self, airport_info, xml_data):
         ret = []
         root = ElementTree.fromstring(xml_data)
         for d in list(root.find('data')):
@@ -56,14 +60,17 @@ class AcquireMeter(object):
             sky_condition = []
             for sc in d.iter('sky_condition'):
                 sky_cover = sc.attrib['sky_cover']
-                cloud_base_ft_agl = sc.attrib['cloud_base_ft_agl']
+                try:
+                    cloud_base_ft_agl = sc.attrib['cloud_base_ft_agl']
+                except KeyError:
+                    cloud_base_ft_agl = ''
                 sky_condition.append(MeterSkyCondition(sky_cover, cloud_base_ft_agl))
 
             flight_category = d.find('flight_category').text
             elevation_m = d.find('elevation_m').text
 
-            ret.append(Meter(station.id, time, air_temp, dewpoint, wind_dir,
+            ret.append(Meter(airport_info.id, time, air_temp, dewpoint, wind_dir,
                              wind_speed, visibility, altimeter, sky_condition,
                              flight_category, elevation_m, sea_level_press))
-        app.logger.debug(ret)
+        current_app.logger.debug(ret)
         return ret

@@ -1,11 +1,13 @@
 # -*- coding:utf-8 -*-
 from sqlalchemy import Column, Integer, String, ForeignKey
-from app import app
+
+from app.model import DB_BASE
+
 
 __author__ = 'windschord.com'
 
 
-class TafSkyCondition(app.db_base):
+class TafSkyCondition(DB_BASE):
     __tablename__ = 'taf_sky_condition'
 
     id = Column(Integer, primary_key=True)
@@ -22,6 +24,7 @@ class TafSkyCondition(app.db_base):
 
     def __str__(self):
         return str(self.__dict__)
+
     def __iter__(self):
         for k, v in self.__dict__.items():
             yield k, v

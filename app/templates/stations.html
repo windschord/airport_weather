@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block body %}
+    {% for message in get_flashed_messages() %}
+        <div class=flash>{{ message }}</div>
+    {% endfor %}
+    <form method="POST" action="{{ url_for('stations.manage') }}?mode=search">
+        <div>ICAO Code：<input type="text" name="airport_name" value="rjtt"></div>
+        <div>
+            <input type="submit" value="search">
+            <input type="reset" value="clear">
+        </div>
+    </form>
+
+    <form method="POST" action="{{ url_for('stations.manage') }}?mode=edit">
+        <table class="stationTB">
+            <tr>
+                <td class="head">{{ _("id") }}</td>
+                <td>{{ search_res.id }}
+                    <input type="hidden" name="id" value="{{ search_res.id }}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="head">{{ _("icao_code") }}</td>
+                <td><input type="text" name="icao_code" value="{{ search_res.icao_code }}" size="60"　maxlength="4"/></td>
+            </tr>
+            <tr>
+                <td class="head">{{ _("country") }}</td>
+                <td><input type="text" name="country" value="{{ search_res.country }}" size="60"/></td>
+            </tr>
+            <tr>
+                <td class="head">{{ _("city") }}</td>
+                <td><input type="text" name="city" value="{{ search_res.city }}" size="60"/></td>
+            </tr>
+            <tr>
+                <td class="head">{{ _("latitude") }}</td>
+                <td><input type="text" name="latitude" value="{{ search_res.latitude }}" size="60"/></td>
+            </tr>
+            <tr>
+                <td class="head">{{ _("longitude") }}</td>
+                <td><input type="text" name="longitude" value="{{ search_res.longitude }}" size="60"/></td>
+            </tr>
+            <tr>
+                <td class="head">{{ _("enable") }}</td>
+                <td>
+                    <select name="enable">
+                        <option value="TRUE"{% if search_res.enable %} selected {% endif %}>{{ _('TRUE') }}</option>
+                        <option value="FALSE" {% if not search_res.enable %} selected {% endif %}>{{ _('FALSE') }}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div>
+            {% if not search_res %}
+                <input type="radio" name="type" value="add" checked> add
+            {% else %}
+                <input type="radio" name="type" value="delete"> del
+                <input type="radio" name="type" value="update" checked> update
+            {% endif %}
+        </div>
+        <div>
+            <input type="submit" value="Execute">
+            <input type="reset" value="clear">
+        </div>
+    </form>
+
+
+    {% if title %}
+        <table class="meterTb">
+            <caption>{{ title }}</caption>
+            <tr>
+                <th>{{ _("id") }}</th>
+                <th>{{ _("icao_code") }}</th>
+                <th>{{ _("country") }}</th>
+                <th>{{ _("city") }}</th>
+                <th>{{ _("latitude") }}</th>
+                <th>{{ _("longitude") }}</th>
+                <th>{{ _("enable") }}</th>
+            </tr>
+
+            {% for part_d in stations %}
+                <tr>
+                    <td>{{ part_d.id }}</td>
+                    <td>{{ part_d.icao_code }}</td>
+                    <td>{{ part_d.country }}</td>
+                    <td>{{ part_d.city }}</td>
+                    <td>{{ part_d.latitude }}</td>
+                    <td>{{ part_d.longitude }}</td>
+                    <td>{{ part_d.enable }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

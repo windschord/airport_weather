@@ -1,13 +1,16 @@
 # -*- coding:utf-8 -*-
-from sqlalchemy import Column, Float, String, Integer, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Float, String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relation
-from app import app
+
+from app.model import DB_BASE
+
 from app.model.taf_sky_condition import TafSkyCondition
+
 
 __author__ = 'windschord.com'
 
 
-class TafForecast(app.db_base):
+class TafForecast(DB_BASE):
     __tablename__ = 'taf_forecast'
 
     id = Column(Integer, primary_key=True)

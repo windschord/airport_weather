@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block body %}
+    {% for message in get_flashed_messages() %}
+        <div class=flash>{{ message }}</div>
+    {% endfor %}
+    <form method="POST" action="{{ url_for('show.search') }}">
+        <div>ICAO Code：<input type="text" name="airport_name" value="rjtt"></div>
+        <div>
+            <input type="radio" name="type" value="meter" checked> Meter
+            <input type="radio" name="type" value="taf" > Taf
+        </div>
+        <div>
+            <input type="submit" value="search">
+            <input type="reset" value="clear">
+        </div>
+    </form>
+
+    {% if title %}
+        <table class="meterTb">
+            <caption>{{ title }}</caption>
+            <tr>
+                <th>{{ _("time") }}</th>
+                <th>{{ _("air_temp") }}</th>
+                <th>{{ _("dewpoint") }}</th>
+                <th>{{ _("wind_dir") }}</th>
+                <th>{{ _("wind_speed") }}</th>
+                <th>{{ _("visibility") }}</th>
+                <th>{{ _("altimeter") }}</th>
+                <th>{{ _("sea_level_press") }}</th>
+                <th>{{ _("wx_string") }}</th>
+                <th>{{ _("sky_condition") }}</th>
+                <th>{{ _("flight_category") }}</th>
+                <th>{{ _("elevation_m") }}</th>
+            </tr>
+
+            {% for part_d in search_data %}
+                <tr>
+                    <td>{{ part_d.time }}</td>
+                    <td>{{ part_d.air_temp }}</td>
+                    <td>{{ part_d.dewpoint }}</td>
+                    <td>{{ part_d.wind_dir }}</td>
+                    <td>{{ part_d.wind_speed }}</td>
+                    <td>{{ part_d.visibility }}</td>
+                    <td>{{ part_d.altimeter }}</td>
+                    <td>{{ part_d.sea_level_press }}</td>
+                    <td>{{ part_d.wx_string }}</td>
+                    <td>
+                        <table>
+                            <tr>
+                                <th>sky_cover</th>
+                                <th>cloud_base</th>
+                            </tr>
+                            {% for sc in part_d.sky_condition %}
+                                <tr>
+                                    <td>{{ sc.sky_cover }}</td>
+                                    <td>{{ sc.cloud_base_ft_agl }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                    <td>{{ part_d.flight_category }}</td>
+                    <td>{{ part_d.elevation_m }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

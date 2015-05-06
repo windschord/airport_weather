@@ -1,12 +1,15 @@
 # -*- coding:utf-8 -*-
-from sqlalchemy import Column, Float, String, Integer, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Float, Integer, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relation
-from app import app
+
+from app.model import DB_BASE
 from app.model.taf_forecast import TafForecast
+
 
 __author__ = 'windschord.com'
 
-class Taf(app.db_base):
+
+class Taf(DB_BASE):
     __tablename__ = 'taf'
     __table_args__ = (UniqueConstraint('station_id', 'issue_time', name='taf_pk1'),)
 

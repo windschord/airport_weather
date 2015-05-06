@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='common.css') }}" type="text/css"/>
+    <title></title>
+</head>
+<body>
+<p><div><a href="{{ url_for('show.index') }}"> index </a></div>
+    <div><a href="{{ url_for('show.search') }}"> search data </a></div>
+    <div><a href="{{ url_for('stations.manage') }}"> manage stations </a></div></p>
+{% block body %}{% endblock %}
+</body>
+</html>

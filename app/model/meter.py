@@ -1,13 +1,15 @@
 # -*- coding:utf-8 -*-
 from sqlalchemy import Integer, Column, String, ForeignKey, Float, DateTime, UniqueConstraint
 from sqlalchemy.orm import relation
-from app import app
+
+from app.model import DB_BASE
 from app.model.meter_sky_condition import MeterSkyCondition
+
 
 __author__ = 'windschord.com'
 
 
-class Meter(app.db_base):
+class Meter(DB_BASE):
     __tablename__ = 'meter'
     __table_args__ = (UniqueConstraint('station_id', 'time', name='meter_pk1'),)
 
@@ -28,7 +30,7 @@ class Meter(app.db_base):
 
     def __init__(self, station_id, time, air_temp, dewpoint, wind_dir,
                  wind_speed, visibility, altimeter, sky_condition,
-                 flight_category, elevation_m, sea_level_press=None,):
+                 flight_category, elevation_m, sea_level_press=None, ):
         self.station_id = station_id
         self.time = time
         self.air_temp = air_temp

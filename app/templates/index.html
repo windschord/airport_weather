@@ -1,98 +1,82 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='common.css') }}" type="text/css"/>
-    <title></title>
-</head>
-<body>
-<form method="POST" action="{{ url_for('index') }}">
-    <div>4RetterCode：<input type="text" name="airport_name"></div>
-    <input type="submit" value="send">
-    <input type="reset" value="clear">
-</form>
+{% extends "layout.html" %}
+{% block body %}
+    {% for message in get_flashed_messages() %}
+        <div class=flash>{{ message }}</div>
+    {% endfor %}
+    <form method="POST" action="{{ url_for('show.index') }}">
+        <div>ICAO Code：<input type="text" name="airport_name" value="rjtt"></div>
+        <input type="submit" value="send">
+        <input type="reset" value="clear">
+    </form>
+    <input type="button" value="Get meter" onClick="location.href='{{ url_for('get.get_meter') }}'">
 
-<table class="meterTb">
-    <caption>{{ latest.time }} (Utc)</caption>
-    <tr>
-        <td>Place</td>
-        <td>Temperature</td>
-        <td>Sky condition</td>
-        <td>Wind direction</td>
-        <td>Wind speed</td>
-    </tr>
-    <tr>
-        <td>{{ latest.station_id }}</td>
-        <td>{{ latest.air_temp }} ℃</td>
-        <td>
-            <table>
-                <tr>
-                    <th>sky_cover</th>
-                    <th>cloud_base</th>
-                </tr>
-                {% for sc in latest.sky_condition %}
-                    <tr>
-                        <td>{{ sc.sky_cover }}</td>
-                        <td>{{ sc.cloud_base_ft_agl }} ft</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </td>
-        <td>{{ latest.wind_dir }} °</td>
-        <td>{{ latest.wind_speed }} kt</td>
-    </tr>
-</table>
-
-
-<table class="meterTb">
-    <caption>last 12 hour meters</caption>
-    <tr>
-        <th>station_id</th>
-        <th>time</th>
-        <th>air_temp</th>
-        <th>dewpoint</th>
-        <th>wind_dir</th>
-        <th>wind_speed</th>
-        <th>visibility</th>
-        <th>altimeter</th>
-        <th>sea_level_press</th>
-        <th>wx_string</th>
-        <th>sky_condition</th>
-        <th>flight_category</th>
-        <th>elevation_m</th>
-    </tr>
-
-    {% for part_d in data %}
+    <table class="meterTb">
+        <caption>{{ latest_meter.time }} (Utc)</caption>
         <tr>
-            <td>{{ part_d.station_id }}</td>
-            <td>{{ part_d.time }}</td>
-            <td>{{ part_d.air_temp }}</td>
-            <td>{{ part_d.dewpoint }}</td>
-            <td>{{ part_d.wind_dir }}</td>
-            <td>{{ part_d.wind_speed }}</td>
-            <td>{{ part_d.visibility }}</td>
-            <td>{{ part_d.altimeter }}</td>
-            <td>{{ part_d.sea_level_press }}</td>
-            <td>{{ part_d.wx_string }}</td>
+            <td>Place</td>
+            <td>Temperature</td>
+            <td>Sky condition</td>
+            <td>Wind direction</td>
+            <td>Wind speed</td>
+        </tr>
+        <tr>
+            <td>{{ latest_meter.station_id }}</td>
+            <td>{{ latest_meter.air_temp }} ℃</td>
             <td>
                 <table>
                     <tr>
                         <th>sky_cover</th>
                         <th>cloud_base</th>
                     </tr>
-                    {% for sc in part_d.sky_condition %}
+                    {% for sc in latest_meter.sky_condition %}
                         <tr>
                             <td>{{ sc.sky_cover }}</td>
-                            <td>{{ sc.cloud_base_ft_agl }}</td>
+                            <td>{{ sc.cloud_base_ft_agl }} ft</td>
                         </tr>
                     {% endfor %}
                 </table>
             </td>
-            <td>{{ part_d.flight_category }}</td>
-            <td>{{ part_d.elevation_m }}</td>
+            <td>{{ latest_meter.wind_dir }} °</td>
+            <td>{{ latest_meter.wind_speed }} kt</td>
         </tr>
-    {% endfor %}
+    </table>
 
-</table>
-</body>
-</html>
+    <table class="meterTb">
+        <caption>
+            {% if latest_taf %}
+                {{ latest_taf.issue_time }} (Utc)
+            {% else %}
+                No data
+            {% endif %}
+        </caption>
+        <tr>
+            <td>Place</td>
+            <td>Temperature</td>
+            <td>Sky condition</td>
+            <td>Wind direction</td>
+            <td>Wind speed</td>
+        </tr>
+        <tr>
+            <td>{{ latest_taf.station_id }}</td>
+            <td>{{ latest_taf.air_temp }} ℃</td>
+            <td>
+                <table>
+                    <tr>
+                        <th>sky_cover</th>
+                        <th>cloud_base</th>
+                    </tr>
+                    {% for sc in latest_taf.sky_condition %}
+                        <tr>
+                            <td>{{ sc.sky_cover }}</td>
+                            <td>{{ sc.cloud_base_ft_agl }} ft</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td>{{ latest_taf.wind_dir }} °</td>
+            <td>{{ latest_taf.wind_speed }} kt</td>
+        </tr>
+    </table>
+
+
+{% endblock %}
