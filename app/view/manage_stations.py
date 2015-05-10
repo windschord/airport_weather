@@ -12,17 +12,9 @@ __author__ = 'windschord.com'
 blueprint = Blueprint('stations', __name__, url_prefix='/station/')
 
 
-@blueprint.route('setup')
+@blueprint.route('add')
 def add_station():
-    try:
-        current_app.db_session.add(AirportInfo('RJCC', 1.1, 2.2, True))
-        current_app.db_session.add(AirportInfo('RJTT', 1.1, 2.2, True))
-
-        current_app.db_session.commit()
-        return _('Setup is Success!!')
-    except Exception as e:
-        current_app.logger.exception('Setup is Fail!!\n')
-        return _('Setup is Fail!!')
+    pass
 
 
 @blueprint.route('manage', methods=['GET', 'POST'])

@@ -26,7 +26,7 @@ def index():
             # 最新Meter
             latest_meter = SelectMeter(current_app.db_session).latest(station)
             current_app.logger.debug(latest_meter)
-            latest_taf = SelectTaf().latest(station)
+            latest_taf = SelectTaf(current_app.db_session).latest(station)
             current_app.logger.debug(latest_taf)
 
     return render_template("index.html", latest_meter=latest_meter, latest_taf=latest_taf)
@@ -55,7 +55,7 @@ def search():
                 res = SelectMeter(current_app.db_session).between(station, from_time, to_time)
                 title = _('Meter') + ' [' + station_name + ']'
             elif search_type == 'taf':
-                res = SelectTaf(current_app.db_session).last_12h(station)
+                res = SelectTaf(current_app.db_session).between(station, from_time, to_time)
                 title = _('Taf') + ' [' + station_name + ']'
             else:
                 flash(_('Request type unknown.'))

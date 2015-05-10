@@ -5,7 +5,7 @@ __author__ = 'windschord.com'
 ### app settings ###
 DEBUG = True
 #SERVER_NAME = 'localhost'
-REQUEST_HOURS = 3
+#REQUEST_HOURS = 3
 WEATHER_UPDATE_INTERVAL = 30 # (min)
 SECRET_KEY = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 

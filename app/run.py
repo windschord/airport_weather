@@ -5,6 +5,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from app import app, babel
 from app.model import DB_BASE
+from app.view.system_preferences import load_db
 
 
 __author__ = 'windschord.com'
@@ -20,6 +21,13 @@ def get_locale():
 def setup():
     app.db_engine = create_engine('sqlite:///app.db')
     DB_BASE.metadata.create_all(app.db_engine)
+
+    Session = scoped_session(sessionmaker(autocommit=False,
+                                          autoflush=False,
+                                          bind=app.db_engine))
+    app.db_session = Session()
+    app.db_session.rollback()
+    load_db()
 
     # デバッグ時のみルートを表示する。
     if app.config['DEBUG']:

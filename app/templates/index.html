@@ -40,7 +40,6 @@
             <td>{{ latest_meter.wind_speed }} kt</td>
         </tr>
     </table>
-
     <table class="meterTb">
         <caption>
             {% if latest_taf %}
@@ -51,32 +50,61 @@
         </caption>
         <tr>
             <td>Place</td>
-            <td>Temperature</td>
-            <td>Sky condition</td>
-            <td>Wind direction</td>
-            <td>Wind speed</td>
+            <td>issue_time</td>
+            <td>bulletin_time</td>
+            <td>valid_time_from</td>
+            <td>valid_time_to</td>
+            <td>elevation_m</td>
+            <td>forecast</td>
         </tr>
         <tr>
             <td>{{ latest_taf.station_id }}</td>
-            <td>{{ latest_taf.air_temp }} ℃</td>
+            <td>{{ latest_taf.issue_time }}</td>
+            <td>{{ latest_taf.bulletin_time }}</td>
+            <td>{{ latest_taf.valid_time_from }}</td>
+            <td>{{ latest_taf.valid_time_to }}</td>
+            <td>{{ latest_taf.elevation_m }}</td>
             <td>
-                <table>
-                    <tr>
-                        <th>sky_cover</th>
-                        <th>cloud_base</th>
-                    </tr>
-                    {% for sc in latest_taf.sky_condition %}
-                        <tr>
-                            <td>{{ sc.sky_cover }}</td>
-                            <td>{{ sc.cloud_base_ft_agl }} ft</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </td>
-            <td>{{ latest_taf.wind_dir }} °</td>
-            <td>{{ latest_taf.wind_speed }} kt</td>
         </tr>
     </table>
-
-
+    <table class="meterTb">
+        <caption>forecast</caption>
+        <tr>
+            <td>fcst_time_from</td>
+            <td>fcst_time_to</td>
+            <td>change_indicator</td>
+            <td>wind_dir</td>
+            <td>wind_speed</td>
+            <td>visibility</td>
+            <td>sky_condition</td>
+            <td>flight_category</td>
+            <td>elevation_m</td>
+        </tr>
+        {% for fc in latest_taf.forecast %}
+            <tr>
+                <td>{{ fc.fcst_time_from }}</td>
+                <td>{{ fc.fcst_time_to }}</td>
+                <td>{{ fc.change_indicator }}</td>
+                <td>{{ fc.wind_dir }}</td>
+                <td>{{ fc.wind_speed }}</td>
+                <td>{{ fc.visibility }}</td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>sky_cover</th>
+                            <th>cloud_base</th>
+                        </tr>
+                        {% for sc in fc.sky_condition %}
+                            <tr>
+                                <td>{{ sc.sky_cover }}</td>
+                                <td>{{ sc.cloud_base_ft_agl }} ft</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+                <td>{{ fc.flight_category }}</td>
+                <td>{{ fc.elevation_m }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

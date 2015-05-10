@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block body %}
+    {% for message in get_flashed_messages() %}
+        <div class=flash>{{ message }}</div>
+    {% endfor %}
+    <form method="POST" action="{{ url_for('SystemSetting.index') }}">
+        <div>id：<input type="text" name="id"></div>
+        <div>
+            <input type="submit" value="search">
+            <input type="reset" value="clear">
+        </div>
+    </form>
+    <form method="POST" action="{{ url_for('SystemSetting.index') }}">
+        <table class="stationTB">
+            <tr>
+                <td class="head">id</td>
+                <td>{{ search_settings.id }}
+                    <input type="hidden" name="id" value="{{ search_settings.id }}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="head">key</td>
+                <td>
+                    {% if not search_settings %}
+                        <input type="text" name="key" size="60" 　maxlength="32"/>
+                    {% else %}
+                        {{ search_settings.key }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="head">value</td>
+                <td><input type="text" name="value" value="{{ search_settings.value }}" size="60"/></td>
+            </tr>
+        </table>
+        <div>
+            {% if not search_settings %}
+                <input type="radio" name="type" value="add" checked> add
+            {% else %}
+                <input type="radio" name="type" value="delete"> del
+                <input type="radio" name="type" value="update" checked> update
+            {% endif %}
+        </div>
+        <div>
+            <input type="submit" value="Execute">
+            <input type="reset" value="clear">
+        </div>
+    </form>
+
+    {% if title %}
+        <table class="meterTb">
+            <caption>{{ title }}</caption>
+            <tr>
+                <th>id</th>
+                <th>key</th>
+                <th>value</th>
+            </tr>
+
+            {% for s in settings %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.key }}</td>
+                    <td>{{ s.value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}
